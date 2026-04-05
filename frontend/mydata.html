@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Data</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>📊 My Data</h2>
+
+<div id="dataBox">Loading...</div>
+
+<script>
+const userId = localStorage.getItem("userId");
+
+// 🔒 Protect page
+if (!userId) {
+    alert("Login first");
+    window.location.href = "index.html";
+}
+
+// 📥 Load user data
+async function loadData() {
+    const res = await fetch(`http://localhost:5000/my-data/${userId}`);
+    const data = await res.json();
+
+    let html = `
+<div class="data-container">
+
+  <!-- 🚨 LEFT: EMERGENCY -->
+  <div class="data-card emergency-card">
+    <h3>🚨 My Emergency Requests</h3>
+    ${
+      data.emergencies.length === 0
+        ? "<p>No emergency requests</p>"
+        : data.emergencies.map(e => `
+          <div class="item-card">
+            <p><b>Name:</b> ${e.name}</p>
+            <p><b>Blood:</b> ${e.bloodGroup}</p>
+            <button onclick="deleteEmergency('${e._id}')">❌ Delete</button>
+          </div>
+        `).join("")
+    }
+  </div>
+
+  <!-- 🩸 RIGHT: DONOR -->
+  <div class="data-card donor-card">
+    <h3>🩸 My Donor Status</h3>
+    ${
+      data.donors.length === 0
+        ? "<p>You are not a donor yet</p>"
+        : data.donors.map(d => `
+          <div class="item-card">
+            <p><b>Name:</b> ${d.name}</p>
+            <p><b>Blood:</b> ${d.bloodGroup}</p>
+            <p><b>Status:</b> ${d.available ? "Available" : "Not Available"}</p>
+
+            <button onclick="toggleAvailability('${d.phone}', ${d.available})">
+              ${d.available ? "Set Unavailable" : "Set Available"}
+            </button>
+          </div>
+        `).join("")
+    }
+  </div>
+
+</div>
+`;
+
+document.getElementById("dataBox").innerHTML = html;
+}
+
+// ❌ Delete emergency
+async function deleteEmergency(id) {
+    await fetch(`http://localhost:5000/delete-emergency/${id}`, {
+        method: "DELETE"
+    });
+
+    alert("Deleted");
+    loadData();
+}
+
+// 🔁 Toggle donor status
+async function toggleAvailability(phone, current) {
+    await fetch("http://localhost:5000/become-donor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            phone,
+            available: !current
+        })
+    });
+
+    alert("Updated");
+    loadData();
+}
+
+loadData();
+</script>
+
+</body>
+</html>

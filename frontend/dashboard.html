@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<script>
+  const userId = localStorage.getItem("userId");
+
+  if (!userId) {
+    alert("Please login first");
+    window.location.href = "index.html";
+  }
+</script>
+    <h1>Care4All: Blood Donation, Medicine and Vaccine Tracker</h1>
+    <div id="userBox" class="login"></div>
+
+<script>
+  const email = localStorage.getItem("userEmail");
+
+  const userBox = document.getElementById("userBox");
+
+  if (userId && email) {
+    userBox.innerHTML = `
+      <span>👤 ${email}</span>
+      <button onclick="logout()">Logout</button>
+    `;
+  } else {
+    userBox.innerHTML = `
+      <a href="index.html"><button>signup/login</button></a>
+    `;
+  }
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+</script>
+    <div class="main-btns" id="card">
+      <h2>Emergency Blood Support System</h2>
+        <a href="blood.html?action=emergency"><button>Emergency: Find Blood Now</button></a>
+        <a href="blood.html?action=donate"><button>I Want to Donate Blood</button></a>
+        <a href="blood.html?action=broadcast"><button>Emergency Broadcast!</button></a>
+        <a href="mydata.html"><button>My Data</button></a>
+      <h2>Health Trackers</h2>
+        <a href="medicine.html"><button>Medicine Tracker</button></a>
+        <a href="vaccine.html"><button>Vaccine Tracker</button></a>
+    </div>
+</body>
+
+</html>

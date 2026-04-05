@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Emergency</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+
+  <button onclick="setLang('en-US')">English</button>
+  <button onclick="setLang('hi-IN')">हिंदी</button>
+  <button onclick="setLang('kn-IN')">ಕನ್ನಡ</button>
+  <button id="voiceBtn" onclick="startVoice()">🎤 Speak</button>
+  <button id="repeatBtn" onclick="repeatSpeech()">🔁 Repeat</button>
+
+
+<div id="app"></div>
+
+<script src="user.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="map.js"></script>
+</body> 
+</html>

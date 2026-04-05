@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>signup/login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="auth-card">
+    <h2>Login</h2>
+    <input id="loginEmail" placeholder="Email">
+    <input id="loginPassword" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+
+    <p class="link" onclick="showForgot()">Forgot Password?</p>
+
+    <hr>
+
+    <h2>Signup</h2>
+    <input id="signupEmail" placeholder="Email">
+    <input id="signupPassword" type="password" placeholder="Password">
+    <button onclick="signup()">Signup</button>
+
+    <hr>
+
+    <div id="forgotBox" style="display:none;">
+        <h3>Reset Password</h3>
+        <input id="forgotEmail" placeholder="Enter Email">
+        <input id="newPassword" type="password" placeholder="New Password">
+        <button onclick="resetPassword()">Reset Password</button>
+    </div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>

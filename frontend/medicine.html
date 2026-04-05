@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="userBox"></div>
+
+<script>
+    const userId = localStorage.getItem("userId");
+    const email = localStorage.getItem("userEmail");
+
+    const userBox = document.getElementById("userBox");
+
+    userBox.innerHTML = `
+        <span>👤 ${email}</span>
+        <button onclick="logout()">Logout</button>
+    `;
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "index.html";
+    }
+</script>
+
+<h2>Medicine Tracker 💊</h2>
+
+<div class="main-card">
+
+<input type="text" id="patient" placeholder="Patient Name">
+<input type="text" id="name" placeholder="Medicine Name">
+<input type="time" id="time">
+<input type="text" id="dose" placeholder="Dose">
+<input type="date" id="date">
+
+<button onclick="addMedicine()">Add Medicine</button>
+
+</div>
+<div class="main-card">
+  <h3>Medicine List</h3>
+  <ul id="list"></ul>
+</div>
+
+<div class="main-card">
+  <h3 id="stats">Taken: 0 | Missed: 0</h3>
+</div>
+
+<div class="main-card">
+  <h3>Reminders</h3>
+  <ul id="reminders"></ul>
+</div>
+
+<!-- 🔊 SOUND -->
+<audio id="alarmSound" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3"></audio>
+
+<script src="medicine.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Vaccine Tracker</title>
+</head>
+
+<body>
+    <div id="userBox"></div>
+
+    <script>
+        const userId = localStorage.getItem("userId");
+        const email = localStorage.getItem("userEmail");
+
+       // if (!userId) {
+//     alert("Please login first");
+//     window.location.href = "index.html";
+// }
+
+        const userBox = document.getElementById("userBox");
+
+        userBox.innerHTML = `
+    <span>👤 ${email}</span>
+    <button onclick="logout()">Logout</button>
+  `;
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+    </script>
+    <style>
+        /* 🌈 GLOBAL */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #FFD6BA, #FFE8CD, #FFF2EB);
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  color: #333;
+}
+
+/* 🏥 TITLE */
+h1 {
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* 👤 USER BOX */
+#userBox {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+#userBox button {
+  padding: 5px 10px;
+  border-radius: 12px;
+  background: #ff8a8a;
+  border: none;
+  color: white;
+}
+
+/* 📦 MAIN CARD */
+#app, #auth {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 25px;
+  width: 420px;
+  margin: 20px auto;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* ✨ INPUTS */
+input, select {
+  width: 90%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus, select:focus {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 6px rgba(255,107,107,0.3);
+}
+
+/* 🔘 BUTTONS */
+button {
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  color: #2b2b2b;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin: 6px;
+  font-weight: 500;
+  transition: 0.25s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #ff6b6b, #ffc3a0);
+}
+
+/* ❌ DELETE BUTTON */
+.deleteBtn {
+  background: #ff6b6b !important;
+  color: white;
+}
+
+/* 📋 LIST CARDS */
+li {
+  background: white;
+  margin: 12px auto;
+  padding: 12px;
+  width: 90%;
+  border-radius: 12px;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+  text-align: left;
+  border-left: 5px solid #ff9a9e;
+}
+
+/* ✨ HOVER EFFECT */
+li:hover {
+  transform: scale(1.02);
+}
+
+/* ⚠ ERROR */
+.error {
+  color: red;
+  font-size: 12px;
+}
+
+/* 📊 SECTION HEADINGS */
+h3 {
+  margin-top: 20px;
+}
+
+/* 📅 BABY SECTION */
+#babyList li {
+  border-left: 5px solid #ff6b6b;
+}
+    </style>
+    </head>
+
+    <body>
+
+        <h1>💉 Smart Vaccine Tracker</h1>
+
+        <!-- 🔐 LOGIN / SIGNUP -->
+        <div id="auth">
+            <h3>Login / Signup</h3>
+            <input id="username" placeholder="Username"><br>
+            <input id="password" type="password" placeholder="Password"><br>
+
+            <button onclick="signup()">Signup</button>
+            <button onclick="login()">Login</button>
+
+            <div id="authError" class="error"></div>
+        </div>
+
+        <!-- ✅ MAIN APP -->
+        <div id="app">
+            
+
+<script>
+  const storedUserId = localStorage.getItem("userId");
+  const storedEmail = localStorage.getItem("userEmail");
+
+ if (storedUserId && storedEmail) {
+    document.getElementById("auth").style.display = "none";
+    document.getElementById("app").style.display = "block";
+
+    document.getElementById("welcome").innerText = "👤 Welcome " + storedEmail;
+
+    window.userId = storedUserId;
+
+    showVaccines();
+    showBabyVaccines();   // 🔥 ADD THIS
+}
+</script>
+
+            <h3 id="welcome"></h3>
+
+            <select id="vaccine">
+                <option value="">Select Vaccine</option>
+                <option>COVID-19</option>
+                <option>Hepatitis B</option>
+                <option>Polio</option>
+            </select>
+            <div id="vaccineError" class="error"></div>
+
+            <br>
+
+            <label>Doses:</label><br>
+            <input type="number" id="doseCount" min="1" placeholder="Enter doses">
+            <div id="doseCountError" class="error"></div>
+
+            <button onclick="createDoseInputs()">Set Schedule</button>
+
+            <div id="doseInputs"></div>
+            <div id="doseError" class="error"></div>
+
+            <button onclick="saveVaccine()">Save Vaccine</button>
+
+            <hr>
+
+            <h3>📅 Schedule</h3>
+            <ul id="list"></ul>
+            <hr>
+
+<h3>👶 Baby Vaccines</h3>
+
+<input type="date" id="babyDOB">
+<button onclick="addBabyVaccines()">Add Baby Vaccines</button>
+<button onclick="clearBabyVaccines()" style="background:red;">Clear All</button>
+
+<ul id="babyList"></ul>
+
+        </div>
+
+        <script>
+
+            const API = "http://localhost:5000";
+
+            let token = "";
+
+            // 🔐 SIGNUP
+            async function signup() {
+                let username = document.getElementById("username").value;
+                let password = document.getElementById("password").value;
+
+                let res = await fetch(API + "/signup", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: username,   // map username → email
+                        password
+                    })
+                });
+
+                let data = await res.json();
+                document.getElementById("authError").innerText = data.message || "Signup done";
+            }
+
+            // 🔐 LOGIN
+            async function login() {
+                let username = document.getElementById("username").value;
+                let password = document.getElementById("password").value;
+
+                let res = await fetch(API + "/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: username,
+                        password
+                    })
+                });
+
+                let data = await res.json();
+
+                if (data.userId) {   // ✅ instead of token
+                    window.userId = data.userId;
+                    localStorage.setItem("userId", window.userId);
+                    localStorage.setItem("userEmail", username);
+                    document.getElementById("auth").style.display = "none";
+                    document.getElementById("app").style.display = "block";
+
+                    document.getElementById("welcome").innerText = "👤 Welcome " + username;
+
+                    showVaccines();
+                } else {
+                    document.getElementById("authError").innerText = "Login failed";
+                }
+            }
+            let babyVaccines = [
+    { name: "BCG", days: 0 },
+    { name: "Hepatitis B (Birth)", days: 0 },
+    { name: "OPV (Polio) - Birth", days: 0 },
+
+    { name: "DPT 1", days: 42 },
+    { name: "OPV 1", days: 42 },
+    { name: "Hepatitis B 2", days: 42 },
+
+    { name: "DPT 2", days: 70 },
+    { name: "OPV 2", days: 70 },
+
+    { name: "DPT 3", days: 98 },
+    { name: "OPV 3", days: 98 },
+
+    { name: "Measles", days: 270 },
+
+    { name: "DPT Booster", days: 480 },
+    { name: "OPV Booster", days: 480 }
+];
+
+            // CREATE DOSE INPUTS
+            function createDoseInputs() {
+                let count = document.getElementById("doseCount").value;
+
+                if (!count || count < 1) {
+                    document.getElementById("doseCountError").innerText = "Enter doses";
+                    return;
+                }
+
+                document.getElementById("doseCountError").innerText = "";
+
+                let container = document.getElementById("doseInputs");
+                container.innerHTML = "";
+
+                for (let i = 1; i <= count; i++) {
+                    let input = document.createElement("input");
+                    input.type = "date";
+                    input.id = "dose" + i;
+
+                    container.append("Dose " + i + ": ");
+                    container.appendChild(input);
+                    container.appendChild(document.createElement("br"));
+                }
+            }
+
+            // SAVE VACCINE (MongoDB)
+            async function saveVaccine() {
+                let vaccine = document.getElementById("vaccine").value;
+                let count = document.getElementById("doseCount").value;
+
+                if (!vaccine) {
+                    document.getElementById("vaccineError").innerText = "Enter vaccine";
+                    return;
+                }
+
+                if (!count || count < 1) {
+                    document.getElementById("doseCountError").innerText = "Enter doses";
+                    return;
+                }
+
+                let doses = [];
+
+                for (let i = 1; i <= count; i++) {
+                    let date = document.getElementById("dose" + i).value;
+
+                    if (!date) {
+                        document.getElementById("doseError").innerText = "Enter date";
+                        return;
+                    }
+
+                    doses.push({ date, taken: false });
+                }
+
+                await fetch(API + "/save-vaccine", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ userId, vaccine, doses })
+                });
+
+                showVaccines();
+            }
+async function addBabyVaccines() {
+ let birthDate = document.getElementById("babyDOB").value;
+
+if (!birthDate) {
+    alert("Please select baby's birth date");
+    return;
+}
+
+    let doses = [];
+
+    babyVaccines.forEach(v => {
+        let date = new Date(birthDate);
+        date.setDate(date.getDate() + v.days);
+
+        doses.push({
+            vaccine: v.name,
+            date: date.toISOString().split("T")[0],
+            taken: false
+        });
+    });
+
+    await fetch(API + "/save-baby-vaccines", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId,
+            doses
+        })
+    });
+
+    showBabyVaccines();
+}
+async function showBabyVaccines() {
+    let res = await fetch(API + "/get-baby-vaccines/" + userId);
+    let data = await res.json();
+
+    let list = document.getElementById("babyList");
+    list.innerHTML = "";
+
+   data.forEach(d => {
+    let li = document.createElement("li");
+
+    li.innerText = d.vaccine + " : " + d.date;
+
+    // ✔ Taken
+    if (d.taken) {
+        li.innerText += " ✔";
+    } else {
+        let btn = document.createElement("button");
+        btn.innerText = "Mark Taken";
+
+        btn.onclick = () => markBabyTaken(d._id);
+
+        li.appendChild(document.createElement("br"));
+        li.appendChild(btn);
+    }
+
+    // 🔴 DELETE BUTTON
+    let del = document.createElement("button");
+    del.innerText = "Delete";
+    del.className = "deleteBtn";
+
+    del.onclick = () => deleteBabyVaccine(d._id);
+
+    li.appendChild(document.createElement("br"));
+    li.appendChild(del);
+
+    list.appendChild(li);
+});
+}
+async function deleteBabyVaccine(id) {
+    await fetch(API + "/delete-baby-vaccine/" + id, {
+        method: "DELETE"
+    });
+
+    showBabyVaccines();
+}
+async function markBabyTaken(id) {
+    await fetch(API + "/mark-baby-taken", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id })
+    });
+
+    showBabyVaccines();
+}
+async function clearBabyVaccines() {
+    await fetch(API + "/clear-baby-vaccines/" + userId, {
+        method: "DELETE"
+    });
+
+    showBabyVaccines();
+}
+            // GET FROM DB
+            async function showVaccines() {
+                let res = await fetch(API + "/get-vaccines/" + userId);
+                let data = await res.json();
+                console.log("Normal vaccines:", data);  // 👈 ADD THIS
+
+                let list = document.getElementById("list");
+                list.innerHTML = "";
+
+                let today = new Date();
+
+                data.forEach((v) => {
+                    v.doses.forEach((d) => {
+
+                        let li = document.createElement("li");
+
+                        let doseDate = new Date(d.date);
+                        let diff = Math.floor((doseDate - today) / (1000 * 60 * 60 * 24));
+
+                        if (d.taken) {
+                            li.innerText = v.vaccine + " : " + d.date + " ✔ Taken";
+                        } else {
+                            li.innerText = v.vaccine + " : " + d.date;
+
+                            if (diff < 0) {
+                                li.innerText += " ⚠ Missed";
+                            }
+
+                            let btn = document.createElement("button");
+                            btn.innerText = "Mark Taken";
+
+                            btn.onclick = () => markTaken(v._id, d._id);
+
+                            li.appendChild(document.createElement("br"));
+                            li.appendChild(btn);
+                        }
+
+                        let del = document.createElement("button");
+                        del.innerText = "Delete";
+                        del.className = "deleteBtn";
+
+                        del.onclick = () => deleteDose(v._id, d._id);
+
+                        li.appendChild(document.createElement("br"));
+                        li.appendChild(del);
+
+                        list.appendChild(li);
+                    });
+                });
+            }
+
+            // MARK TAKEN
+            async function markTaken(vaccineId, doseId) {
+                await fetch(API + "/mark-taken", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({ vaccineId, doseId })
+                });
+
+                showVaccines();
+            }
+
+            // DELETE DOSE
+            async function deleteDose(vaccineId, doseId) {
+                await fetch(API + "/delete-dose", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({ vaccineId, doseId })
+                });
+
+                showVaccines();
+            }
+
+        </script>
+
+    </body>
+
+</html>
